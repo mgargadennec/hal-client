@@ -1,0 +1,31 @@
+/src/*.js
+/.idea
+*.iml
+/bundle.js
+/npm-debug.log
+/node_modules/
+/dist/search.js
+/dist_rct/
+/dist_prod/
+/dist_ppd/
+/lib/
+target/
+
+# WTI #
+#######
+/src/i18n/*/*.*.json
+/src/i18n/account-settings/Catalog.json
+/src/i18n/platform/Catalog.json
+
+# OS junk files #
+#################
+[Tt]humbs.db
+*.DS_Store
+*.db
+*.log
+*.log.zip
+*.log.gz
+*.log.tgz
+*.log.bz2
+*.~lock.*
+*.log.lck

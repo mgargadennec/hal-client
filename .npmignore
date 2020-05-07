@@ -1,0 +1,13 @@
+/.idea/
+/node_modules/
+/.gitignore
+/.npmignore
+/.npmrc
+/bundle.js
+/index.html
+/nginx.conf
+/package.json
+/README.md
+/tsconfig.json
+/webpack.config.js
+/dist/
