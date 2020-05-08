@@ -25,12 +25,13 @@ export interface ResourceClient {
 
     $patchSelf(payload: any, options?: any): Promise<Resource | Resource[]>;
 
+    $deleteSelf(urlParams?: Parameters, options?: any): Promise<Resource | Resource[]>;
+
     $linkSelf(links: string[], options?: any): Promise<Resource | Resource[]>;
 
     $unlinkSelf(links: string[], options?: any): Promise<Resource | Resource[]>;
 
 }
-
 
 export class XMLHttpRequestResourceClient implements ResourceClient {
     constructor(private _resource: Resource) {
@@ -38,6 +39,10 @@ export class XMLHttpRequestResourceClient implements ResourceClient {
 
     $delete(rel: string, urlParams?: Parameters, options?: any): Promise<Resource | Resource[]> {
         return this.$request('DELETE', rel, urlParams, undefined, options);
+    }
+
+    $deleteSelf(urlParams?: Parameters, options?: any): Promise<Resource | Resource[]> {
+        return this.$delete('self', urlParams, options);
     }
 
     $get(rel: string, urlParams?: Parameters, options?: any): Promise<Resource | Resource[]> {
@@ -80,7 +85,7 @@ export class XMLHttpRequestResourceClient implements ResourceClient {
     }
 
     $putSelf(payload: any, options?: any): Promise<Resource | Resource[]> {
-        return this.$put('self', payload, options);
+        return this.$put('self', undefined, payload, options);
     }
 
     $request(method: string, rel: string, urlParams?: Parameters, body?: any, options?: any): Promise<Resource | Resource[]> {
@@ -144,11 +149,24 @@ export class XMLHttpRequestResourceClient implements ResourceClient {
 
     private performRequest(method: string, url: string, body: any, options: any): Promise<Resource | Resource[]> {
         return new Promise(function (resolve, reject) {
-            var xhr = new XMLHttpRequest();
+            const xhr = new XMLHttpRequest();
             xhr.open(method, url);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Accept', 'application/hal+json, application/json');
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
-                    resolve(xhr.response);
+                    if (this.status === 204 || !xhr.responseText) {
+                        resolve(undefined);
+                        return;
+                    }
+                    const obj = JSON.parse(xhr.responseText);
+                    if (Array.isArray(obj)) {
+                        resolve(obj.map(item => new ResourceImpl(item)));
+                        return;
+                    } else {
+                        resolve(new ResourceImpl(obj));
+                        return;
+                    }
                 } else {
                     reject({
                         status: this.status,
@@ -162,9 +180,9 @@ export class XMLHttpRequestResourceClient implements ResourceClient {
                     statusText: xhr.statusText
                 });
             };
-            if(body){
-                xhr.send(body);
-            }else{
+            if (body) {
+                xhr.send(JSON.stringify(body));
+            } else {
                 xhr.send();
             }
         });

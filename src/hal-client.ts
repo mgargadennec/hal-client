@@ -1,33 +1,30 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var resource_1 = require("./resource");
-function createClient(url) {
+import {Resource, ResourceImpl} from "./resource";
+
+export function createClient(url: string): Promise<Resource> {
     return new Promise(function (resolve, reject) {
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
         xhr.open('GET', url);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.setRequestHeader('Accept', 'application/hal+json, application/json');
-        xhr.onload = function () {
+
+        xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {
                 if (xhr.status === 204 || !xhr.responseText) {
                     return resolve(undefined);
                 }
-                var obj = JSON.parse(xhr.responseText);
+                const obj = JSON.parse(xhr.responseText);
                 if (obj instanceof Array) {
                     throw new Error('The API root should be a single resource, not a list');
+                } else {
+                    resolve(new ResourceImpl(obj));
                 }
-                else {
-                    resolve(new resource_1.ResourceImpl(obj));
-                }
-            }
-            else {
+            } else {
                 throw new Error('The API root should be a single resource, not a list');
             }
         };
-        xhr.onerror = function () {
+        xhr.onerror = () => {
             throw new Error('The API root should be a single resource, not a list');
         };
         xhr.send();
     });
 }
-exports.createClient = createClient;

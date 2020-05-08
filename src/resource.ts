@@ -18,35 +18,80 @@ export interface Resource {
 
     $getEmbedded(rel: string): Resource | Resource[] | undefined;
 
+    state(): Object;
+
 }
 
 export type Parameters = { [key: string]: string | { [key: string]: string } };
 
-export class ResourceImpl implements Resource {
-    protected _embeddeds: Map<string, Resource | Resource[]>;
-    protected _links: Map<string, Link | Link[]>;
-    protected _client: ResourceClient;
+const nonenumerable = (target: any, propertyKey: string) => {
+    let descriptor = Object.getOwnPropertyDescriptor(target, propertyKey) || {};
+    if (descriptor.enumerable !== false) {
+        descriptor.enumerable = false;
+        Object.defineProperty(target, propertyKey, descriptor)
+    }
+}
 
-    constructor(content: any, _embeddeds: Map<string, Resource[]>, links: Map<string, Link[]>) {
-        this._embeddeds = _embeddeds;
-        this._links = links;
+export class ResourceImpl implements Resource {
+    private _embedded: Map<string, Resource | Resource[]>;
+    private _links: Map<string, Link | Link[]>;
+    private _client: ResourceClient;
+
+    constructor(content: any) {
+        this._embedded = new Map<string, Resource | Resource[]>();
+        this._links = new Map<string, Link | Link[]>();
         this._client = new XMLHttpRequestResourceClient(this);
 
-        Object.keys(content).forEach(
-            key => Object.defineProperty(this, key, {
-                configurable: false,
-                enumerable: false,
-                value: content[key]
-            })
+        Object.keys(content).forEach(key => {
+                if (key === '_links') {
+                    Object.keys(content[key]).forEach(
+                        linkRelation => {
+                            if (Array.isArray(content[key][linkRelation])) {
+                                this._links.set(linkRelation, content[key][linkRelation].map((it: any) => it as Link))
+                            } else {
+                                this._links.set(linkRelation, content[key][linkRelation] as Link);
+                            }
+                        }
+                    )
+                } else if (key === '_embedded') {
+                    Object.keys(content[key]).forEach(
+                        embeddedRelation => {
+                            if (Array.isArray(content[key][embeddedRelation])) {
+                                this._embedded.set(embeddedRelation, content[key][embeddedRelation].map((it: any) => new ResourceImpl(it)))
+                            } else {
+                                this._embedded.set(embeddedRelation, new ResourceImpl(content[key][embeddedRelation]));
+                            }
+                        }
+                    )
+                } else {
+                    Object.defineProperty(this, key, {
+                        configurable: false,
+                        enumerable: true,
+                        writable: false,
+                        value: content[key]
+                    })
+                }
+            }
         )
+        nonenumerable(this, '_links');
+        nonenumerable(this, '_embedded');
+        nonenumerable(this, '_client');
+    }
+
+    state(): Object {
+        const state: any = {};
+        Object.keys(this).forEach(key => {
+            state[key] = (this as any)[key];
+        })
+        return state;
     }
 
     $has(rel: string): boolean {
-        return this._embeddeds.has(rel) || this._links.has(rel);
+        return this._embedded.has(rel) || this._links.has(rel);
     }
 
     $hasEmbedded(rel: string): boolean {
-        return this._embeddeds.has(rel) && this._embeddeds.get(rel) != undefined;
+        return this._embedded.has(rel) && this._embedded.get(rel) != undefined;
     }
 
     $hasLink(rel: string): boolean {
@@ -77,8 +122,8 @@ export class ResourceImpl implements Resource {
         return this._client;
     }
 
-    $getEmbedded(rel: string): Resource | Resource[] | undefined  {
-        return this._embeddeds.get(rel)
+    $getEmbedded(rel: string): Resource | Resource[] | undefined {
+        return this._embedded.get(rel)
     }
 
     private generateUrl(href: string, parameters: Parameters) {

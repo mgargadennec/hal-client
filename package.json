@@ -9,17 +9,19 @@
     "deploy": "npm run build && webpack"
   },
   "devDependencies": {
+    "@types/uri-templates": "^0.1.30",
     "ts-loader": "^6.0.4",
     "typescript": "^3.5.3",
     "webpack": "^4.36.1",
     "webpack-cli": "^3.3.6",
-    "webpack-dev-server": "^3.7.2",
-    "@types/uri-templates": "^0.1.30"
+    "webpack-dev-server": "^3.7.2"
   },
   "publishConfig": {
     "registry": "https://nexus.financeactive.com/repository/npm-fa/"
   },
   "dependencies": {
     "uri-templates": "^0.2.0"
-  }
+  },
+  "main": "dist/index",
+  "typings": "dist/index"
 }
