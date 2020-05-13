@@ -4,8 +4,6 @@
 /bundle.js
 /npm-debug.log
 /node_modules/
-/dist/
-/lib/
 target/
 
 # OS junk files #
