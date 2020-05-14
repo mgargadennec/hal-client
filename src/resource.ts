@@ -20,6 +20,8 @@ export interface Resource {
 
     state(): Object;
 
+    headers(): Headers;
+
 }
 
 export type Parameters = { [key: string]: string | { [key: string]: string } };
@@ -36,11 +38,21 @@ export class ResourceImpl implements Resource {
     private _embedded: Map<string, Resource | Resource[]>;
     private _links: Map<string, Link | Link[]>;
     private _client: ResourceClient;
+    private _headers: Headers
 
-    constructor(content: any) {
+    constructor(content: any, allHeaders: string) {
         this._embedded = new Map<string, Resource | Resource[]>();
         this._links = new Map<string, Link | Link[]>();
         this._client = new XMLHttpRequestResourceClient(this);
+
+        //Parse headers
+        var arr = allHeaders.split('\r\n');
+        var parsedHeaders = arr.reduce(function (acc: any, current, i) {
+            var parts = current.split(': ');
+            acc[parts[0]] = parts[1];
+            return acc;
+        }, {});
+        this._headers = new Headers(parsedHeaders);
 
         Object.keys(content).forEach(key => {
                 if (key === '_links') {
@@ -57,9 +69,9 @@ export class ResourceImpl implements Resource {
                     Object.keys(content[key]).forEach(
                         embeddedRelation => {
                             if (Array.isArray(content[key][embeddedRelation])) {
-                                this._embedded.set(embeddedRelation, content[key][embeddedRelation].map((it: any) => new ResourceImpl(it)))
+                                this._embedded.set(embeddedRelation, content[key][embeddedRelation].map((it: any) => new ResourceImpl(it, '')))
                             } else {
-                                this._embedded.set(embeddedRelation, new ResourceImpl(content[key][embeddedRelation]));
+                                this._embedded.set(embeddedRelation, new ResourceImpl(content[key][embeddedRelation], ''));
                             }
                         }
                     )
@@ -84,6 +96,10 @@ export class ResourceImpl implements Resource {
             state[key] = (this as any)[key];
         })
         return state;
+    }
+
+    headers(): Headers {
+        return this._headers;
     }
 
     $has(rel: string): boolean {

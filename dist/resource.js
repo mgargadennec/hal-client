@@ -10,11 +10,19 @@ var nonenumerable = function (target, propertyKey) {
     }
 };
 var ResourceImpl = /** @class */ (function () {
-    function ResourceImpl(content) {
+    function ResourceImpl(content, allHeaders) {
         var _this = this;
         this._embedded = new Map();
         this._links = new Map();
         this._client = new resource_client_1.XMLHttpRequestResourceClient(this);
+        //Parse headers
+        var arr = allHeaders.split('\r\n');
+        var parsedHeaders = arr.reduce(function (acc, current, i) {
+            var parts = current.split(': ');
+            acc[parts[0]] = parts[1];
+            return acc;
+        }, {});
+        this._headers = new Headers(parsedHeaders);
         Object.keys(content).forEach(function (key) {
             if (key === '_links') {
                 Object.keys(content[key]).forEach(function (linkRelation) {
@@ -29,10 +37,10 @@ var ResourceImpl = /** @class */ (function () {
             else if (key === '_embedded') {
                 Object.keys(content[key]).forEach(function (embeddedRelation) {
                     if (Array.isArray(content[key][embeddedRelation])) {
-                        _this._embedded.set(embeddedRelation, content[key][embeddedRelation].map(function (it) { return new ResourceImpl(it); }));
+                        _this._embedded.set(embeddedRelation, content[key][embeddedRelation].map(function (it) { return new ResourceImpl(it, ''); }));
                     }
                     else {
-                        _this._embedded.set(embeddedRelation, new ResourceImpl(content[key][embeddedRelation]));
+                        _this._embedded.set(embeddedRelation, new ResourceImpl(content[key][embeddedRelation], ''));
                     }
                 });
             }
@@ -56,6 +64,9 @@ var ResourceImpl = /** @class */ (function () {
             state[key] = _this[key];
         });
         return state;
+    };
+    ResourceImpl.prototype.headers = function () {
+        return this._headers;
     };
     ResourceImpl.prototype.$has = function (rel) {
         return this._embedded.has(rel) || this._links.has(rel);

@@ -108,11 +108,11 @@ var XMLHttpRequestResourceClient = /** @class */ (function () {
                     }
                     var obj = JSON.parse(xhr.responseText);
                     if (Array.isArray(obj)) {
-                        resolve(obj.map(function (item) { return new resource_1.ResourceImpl(item); }));
+                        resolve(obj.map(function (item) { return new resource_1.ResourceImpl(item, xhr.getAllResponseHeaders()); }));
                         return;
                     }
                     else {
-                        resolve(new resource_1.ResourceImpl(obj));
+                        resolve(new resource_1.ResourceImpl(obj, xhr.getAllResponseHeaders()));
                         return;
                     }
                 }

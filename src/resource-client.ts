@@ -163,10 +163,10 @@ export class XMLHttpRequestResourceClient implements ResourceClient {
                     }
                     const obj = JSON.parse(xhr.responseText);
                     if (Array.isArray(obj)) {
-                        resolve(obj.map(item => new ResourceImpl(item)));
+                        resolve(obj.map(item => new ResourceImpl(item, xhr.getAllResponseHeaders())));
                         return;
                     } else {
-                        resolve(new ResourceImpl(obj));
+                        resolve(new ResourceImpl(obj, xhr.getAllResponseHeaders()));
                         return;
                     }
                 } else {
