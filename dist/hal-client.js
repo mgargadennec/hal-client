@@ -1,12 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var resource_1 = require("./resource");
-function createClient(url) {
+var hal_client_options_1 = require("./hal-client-options");
+function createClient(url, options) {
+    if (options === void 0) { options = hal_client_options_1.halClientOptions; }
     return new Promise(function (resolve, reject) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', url);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('Accept', 'application/hal+json, application/json');
+        options.headers.forEach(function (value, key) {
+            xhr.setRequestHeader(key, value);
+        });
         xhr.onload = function () {
             if (xhr.status >= 200 && xhr.status < 300) {
                 if (xhr.status === 204 || !xhr.responseText) {

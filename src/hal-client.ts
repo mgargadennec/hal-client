@@ -1,11 +1,14 @@
 import {Resource, ResourceImpl} from "./resource";
+import {halClientOptions, HalClientOptions} from "./hal-client-options";
 
-export function createClient(url: string): Promise<Resource> {
+export function createClient(url: string, options: HalClientOptions = halClientOptions): Promise<Resource> {
     return new Promise(function (resolve, reject) {
         const xhr = new XMLHttpRequest();
         xhr.open('GET', url);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('Accept', 'application/hal+json, application/json');
+
+        options.headers.forEach((value, key) => {
+            xhr.setRequestHeader(key, value);
+        })
 
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {

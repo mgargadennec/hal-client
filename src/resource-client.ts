@@ -1,4 +1,5 @@
-import {Parameters, Resource, ResourceImpl} from "./resource";
+import {Parameters, Resource, ResourceImpl} from './resource';
+import {halClientOptions} from './hal-client-options';
 
 export interface ResourceClient {
     $request(method: string, rel: string, urlParams?: Parameters, body?: any, options?: Object): Promise<Resource | Resource[]>;
@@ -151,8 +152,9 @@ export class XMLHttpRequestResourceClient implements ResourceClient {
         return new Promise(function (resolve, reject) {
             const xhr = new XMLHttpRequest();
             xhr.open(method, url);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.setRequestHeader('Accept', 'application/hal+json, application/json');
+            halClientOptions.headers.forEach((value, key) => {
+                xhr.setRequestHeader(key, value);
+            })
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
                     if (this.status === 204 || !xhr.responseText) {

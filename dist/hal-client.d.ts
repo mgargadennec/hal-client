@@ -1,2 +1,3 @@
 import { Resource } from "./resource";
-export declare function createClient(url: string): Promise<Resource>;
+import { HalClientOptions } from "./hal-client-options";
+export declare function createClient(url: string, options?: HalClientOptions): Promise<Resource>;

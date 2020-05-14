@@ -1,4 +1,4 @@
-import { Parameters, Resource } from "./resource";
+import { Parameters, Resource } from './resource';
 export interface ResourceClient {
     $request(method: string, rel: string, urlParams?: Parameters, body?: any, options?: Object): Promise<Resource | Resource[]>;
     $get(rel: string, urlParams?: Parameters, options?: any): Promise<Resource | Resource[]>;
