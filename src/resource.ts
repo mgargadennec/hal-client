@@ -38,7 +38,7 @@ export class ResourceImpl implements Resource {
     private _embedded: Map<string, Resource | Resource[]>;
     private _links: Map<string, Link | Link[]>;
     private _client: ResourceClient;
-    private _headers: Headers
+    private _headers: Headers;
 
     constructor(content: any, allHeaders: string) {
         this._embedded = new Map<string, Resource | Resource[]>();
@@ -52,7 +52,8 @@ export class ResourceImpl implements Resource {
             acc[parts[0]] = parts[1];
             return acc;
         }, {});
-        this._headers = new Headers(parsedHeaders);
+        console.log(parsedHeaders);
+        this._headers = new Headers(parsedHeaders as HeadersInit);
 
         Object.keys(content).forEach(key => {
                 if (key === '_links') {
