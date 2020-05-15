@@ -22,6 +22,7 @@ var ResourceImpl = /** @class */ (function () {
             acc[parts[0]] = parts[1];
             return acc;
         }, {});
+        console.log(parsedHeaders);
         this._headers = new Headers(parsedHeaders);
         Object.keys(content).forEach(function (key) {
             if (key === '_links') {
