@@ -19,10 +19,11 @@ var ResourceImpl = /** @class */ (function () {
         var arr = allHeaders.split('\r\n');
         var parsedHeaders = arr.reduce(function (acc, current, i) {
             var parts = current.split(': ');
-            acc[parts[0]] = parts[1];
+            if (parts[0].length > 0) {
+                acc[parts[0]] = parts[1];
+            }
             return acc;
         }, {});
-        console.log(parsedHeaders);
         this._headers = new Headers(parsedHeaders);
         Object.keys(content).forEach(function (key) {
             if (key === '_links') {

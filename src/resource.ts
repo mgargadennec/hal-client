@@ -49,10 +49,11 @@ export class ResourceImpl implements Resource {
         var arr = allHeaders.split('\r\n');
         var parsedHeaders = arr.reduce(function (acc: any, current, i) {
             var parts = current.split(': ');
-            acc[parts[0]] = parts[1];
+            if (parts[0].length > 0) {
+                acc[parts[0]] = parts[1];
+            }
             return acc;
         }, {});
-        console.log(parsedHeaders);
         this._headers = new Headers(parsedHeaders as HeadersInit);
 
         Object.keys(content).forEach(key => {
