@@ -13,7 +13,7 @@ function createClient(url, options) {
         xhr.onload = function () {
             if (xhr.status >= 200 && xhr.status < 300) {
                 if (xhr.status === 204 || !xhr.responseText) {
-                    return resolve(new resource_1.ResourceImpl(undefined, xhr.getAllResponseHeaders()));
+                    return resolve(new resource_1.ResourceImpl({}, xhr.getAllResponseHeaders()));
                 }
                 var obj = JSON.parse(xhr.responseText);
                 if (obj instanceof Array) {

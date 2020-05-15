@@ -103,7 +103,7 @@ var XMLHttpRequestResourceClient = /** @class */ (function () {
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
                     if (this.status === 204 || !xhr.responseText) {
-                        resolve(undefined);
+                        resolve(new resource_1.ResourceImpl({}, xhr.getAllResponseHeaders()));
                         return;
                     }
                     var obj = JSON.parse(xhr.responseText);

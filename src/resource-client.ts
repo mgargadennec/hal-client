@@ -158,7 +158,7 @@ export class XMLHttpRequestResourceClient implements ResourceClient {
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
                     if (this.status === 204 || !xhr.responseText) {
-                        resolve(undefined);
+                        resolve(new ResourceImpl({}, xhr.getAllResponseHeaders()));
                         return;
                     }
                     const obj = JSON.parse(xhr.responseText);

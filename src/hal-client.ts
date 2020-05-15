@@ -13,7 +13,7 @@ export function createClient(url: string, options: HalClientOptions = halClientO
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {
                 if (xhr.status === 204 || !xhr.responseText) {
-                    return resolve(new ResourceImpl(undefined, xhr.getAllResponseHeaders()));
+                    return resolve(new ResourceImpl({}, xhr.getAllResponseHeaders()));
                 }
                 const obj = JSON.parse(xhr.responseText);
                 if (obj instanceof Array) {
