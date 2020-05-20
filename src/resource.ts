@@ -94,11 +94,7 @@ export class ResourceImpl implements Resource {
     }
 
     state(): Object {
-        const state: any = {};
-        Object.keys(this).forEach(key => {
-            state[key] = (this as any)[key];
-        })
-        return state;
+        return JSON.parse(JSON.stringify(this));
     }
 
     headers(): Headers {

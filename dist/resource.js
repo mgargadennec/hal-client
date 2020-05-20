@@ -61,12 +61,7 @@ var ResourceImpl = /** @class */ (function () {
         nonenumerable(this, '_headers');
     }
     ResourceImpl.prototype.state = function () {
-        var _this = this;
-        var state = {};
-        Object.keys(this).forEach(function (key) {
-            state[key] = _this[key];
-        });
-        return state;
+        return JSON.parse(JSON.stringify(this));
     };
     ResourceImpl.prototype.headers = function () {
         return this._headers;
