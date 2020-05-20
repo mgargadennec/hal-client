@@ -31,13 +31,13 @@ var XMLHttpRequestResourceClient = /** @class */ (function () {
         return this.$request('PATCH', rel, urlParams, body, options);
     };
     XMLHttpRequestResourceClient.prototype.$patchSelf = function (payload, options) {
-        return this.$patch('self', payload, options);
+        return this.$patch('self', undefined, payload, options);
     };
     XMLHttpRequestResourceClient.prototype.$post = function (rel, urlParams, body, options) {
         return this.$request('POST', rel, urlParams, body, options);
     };
     XMLHttpRequestResourceClient.prototype.$postSelf = function (payload, options) {
-        return this.$post('self', payload, options);
+        return this.$post('self', undefined, payload, options);
     };
     XMLHttpRequestResourceClient.prototype.$put = function (rel, urlParams, body, options) {
         return this.$request('PUT', rel, urlParams, body, options);
