@@ -90,6 +90,7 @@ export class ResourceImpl implements Resource {
         nonenumerable(this, '_links');
         nonenumerable(this, '_embedded');
         nonenumerable(this, '_client');
+        nonenumerable(this, '_headers');
     }
 
     state(): Object {

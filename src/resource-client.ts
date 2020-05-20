@@ -70,7 +70,7 @@ export class XMLHttpRequestResourceClient implements ResourceClient {
     }
 
     $patchSelf(payload: any, options?: any): Promise<Resource | Resource[]> {
-        return this.$patch('self', payload, options);
+        return this.$patch('self', undefined,payload, options);
     }
 
     $post(rel: string, urlParams?: Parameters, body?: any, options?: any): Promise<Resource | Resource[]> {
@@ -78,7 +78,7 @@ export class XMLHttpRequestResourceClient implements ResourceClient {
     }
 
     $postSelf(payload: any, options?: any): Promise<Resource | Resource[]> {
-        return this.$post('self', payload, options);
+        return this.$post('self', undefined, payload, options);
     }
 
     $put(rel: string, urlParams?: Parameters, body?: any | null, options?: any): Promise<Resource | Resource[]> {

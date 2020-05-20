@@ -58,6 +58,7 @@ var ResourceImpl = /** @class */ (function () {
         nonenumerable(this, '_links');
         nonenumerable(this, '_embedded');
         nonenumerable(this, '_client');
+        nonenumerable(this, '_headers');
     }
     ResourceImpl.prototype.state = function () {
         var _this = this;
