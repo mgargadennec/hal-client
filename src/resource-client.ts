@@ -70,7 +70,7 @@ export class XMLHttpRequestResourceClient implements ResourceClient {
     }
 
     $patchSelf(payload: any, options?: any): Promise<Resource | Resource[]> {
-        return this.$patch('self', undefined,payload, options);
+        return this.$patch('self', undefined, payload, options);
     }
 
     $post(rel: string, urlParams?: Parameters, body?: any, options?: any): Promise<Resource | Resource[]> {
@@ -170,10 +170,13 @@ export class XMLHttpRequestResourceClient implements ResourceClient {
                         return;
                     }
                 } else {
-                    reject({
+                    const errorResponse = xhr.responseText ? {
+                        ...JSON.parse(xhr.responseText)
+                    } : {
                         status: this.status,
                         statusText: xhr.statusText
-                    });
+                    }
+                    reject(errorResponse);
                 }
             };
             xhr.onerror = function () {
