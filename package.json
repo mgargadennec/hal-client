@@ -16,9 +16,6 @@
     "webpack-cli": "^3.3.6",
     "webpack-dev-server": "^3.7.2"
   },
-  "publishConfig": {
-    "registry": "https://nexus.financeactive.com/repository/npm-fa/"
-  },
   "dependencies": {
     "uri-templates": "^0.2.0"
   },
